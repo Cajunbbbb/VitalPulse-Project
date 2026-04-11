@@ -31,12 +31,8 @@ Your role-based CRUD application has been successfully set up with complete auth
 
 ### Sample User Accounts
 
-- **Email**: `john@example.com`
-- **Password**: `password123`
-- **Role**: user
-
-- **Email**: `jane@example.com`
-- **Password**: `password123`
+- **Email**: `test1@example.com`
+- **Password**: `test123`
 - **Role**: user
 
 ---
@@ -369,6 +365,278 @@ Consider these additions:
 - Two-factor authentication
 - API endpoints for mobile apps
 - User ratings/reviews for movements
+
+---
+
+## 🌍 Deploying VitalPulse to Other Units - Windows Guide
+
+This is a **simple, step-by-step guide** for deploying VitalPulse on Windows. Just follow the steps in order!
+
+### What You Need Before Starting
+
+1. **A Windows computer** (Windows 10 or 11)
+2. **XAMPP installed** - includes Apache, MySQL, and PHP
+3. **The VitalPulse project files** - copy from your working installation
+4. **Admin access** to the computer
+5. **Node.js installed** - for building the application
+
+---
+
+### STEP 1: Set Up the Folder
+
+**What you're doing:** Create a new copy of VitalPulse for this unit.
+
+1. Go to: `C:\xampp\htdocs`
+2. Right-click → New Folder
+3. Name it: `VitalPulse-Unit-[YourUnitName]`
+    - Example: `VitalPulse-Unit-ER` or `VitalPulse-Unit-Cardio`
+4. Copy all VitalPulse files into this new folder
+
+---
+
+### STEP 2: Open Command Prompt and Install Dependencies
+
+**What you're doing:** Download and set up all the required code packages.
+
+1. Press `Windows Key + R`
+2. Type: `cmd`
+3. Press Enter
+4. In the command window, type:
+
+```
+cd C:\xampp\htdocs\VitalPulse-Unit-[YourUnitName]
+```
+
+5. Then type:
+
+```
+composer install
+```
+
+This downloads all PHP packages. **Wait for it to finish** ⏳
+
+6. Then type:
+
+```
+npm install
+```
+
+This downloads all JavaScript packages. **Wait for it to finish** ⏳
+
+---
+
+### STEP 3: Create the Database
+
+**What you're doing:** Create a storage place for the application data.
+
+1. Open a web browser and go to: `http://localhost/phpmyadmin`
+2. Leave **User** and **Password** blank, click **Go**
+3. Click on **SQL** tab at the top
+4. Copy and paste this code:
+
+```sql
+CREATE DATABASE vitalpulse_unit_[yourunitname] CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'vitalpulse_user'@'localhost' IDENTIFIED BY 'VitalPulse@2026';
+GRANT ALL PRIVILEGES ON vitalpulse_unit_[yourunitname].* TO 'vitalpulse_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+**Replace `[yourunitname]` with your unit name** (use lowercase, no spaces)  
+Example: `vitalpulse_unit_cardiology`
+
+5. Click **Go** (blue button)
+6. Wait for it to complete ✅
+
+---
+
+### STEP 4: Set Up the Environment File
+
+**What you're doing:** Tell the application where to find the database.
+
+1. Go to your folder: `C:\xampp\htdocs\VitalPulse-Unit-[YourUnitName]`
+2. Find `.env.example` file
+3. Right-click → Copy
+4. Right-click in the same folder → Paste
+5. Right-click the new file → Rename to: `.env`
+6. Right-click `.env` → Open with → Notepad
+
+**Find and change these lines:**
+
+```
+DB_DATABASE=vitalpulse_unit_[yourunitname]
+DB_USERNAME=vitalpulse_user
+DB_PASSWORD=VitalPulse@2026
+APP_NAME=VitalPulse-[YourUnitName]
+APP_URL=http://localhost/VitalPulse-Unit-[YourUnitName]
+```
+
+7. **Save the file** (Ctrl + S)
+8. **Close Notepad**
+
+---
+
+### STEP 5: Generate Application Key & Set Up Database
+
+**What you're doing:** Initialize the application and create all tables.
+
+1. Open Command Prompt again (Windows Key + R → cmd)
+2. Go to your folder:
+
+```
+cd C:\xampp\htdocs\VitalPulse-Unit-[YourUnitName]
+```
+
+3. Type and press Enter:
+
+```
+php artisan key:generate
+```
+
+4. Wait for it to finish ✅
+
+5. Type and press Enter:
+
+```
+php artisan migrate
+```
+
+This creates all the database tables. **Wait for it to finish** ⏳
+
+6. Type and press Enter:
+
+```
+php artisan db:seed
+```
+
+This adds sample admin and user accounts. **Wait for it to finish** ⏳
+
+---
+
+### STEP 6: Build the Application Design
+
+**What you're doing:** Prepare the website's appearance.
+
+In the same Command Prompt window, type:
+
+```
+npm run build
+```
+
+**Wait for it to finish** ⏳
+
+---
+
+### STEP 7: Test It Works
+
+**What you're doing:** Make sure everything is running correctly.
+
+1. **Make sure XAMPP is running:**
+    - Click XAMPP Control Panel icon
+    - Click **Start** for Apache and MySQL (if not running)
+    - They should show in **green**
+
+2. **Open a web browser**
+
+3. **Go to:** `http://localhost/VitalPulse-Unit-[YourUnitName]`
+
+4. **You should see the Login page!** ✅
+
+---
+
+### STEP 8: Test Login With Default Accounts
+
+**What you're doing:** Make sure users can log in.
+
+**Test Account 1 - Admin:**
+
+- Email: `admin@vitalpulse.com`
+- Password: `admin123`
+- What to check: Should see Dashboard with "Movements" and "Users" buttons
+
+**Test Account 2 - Regular User:**
+
+- Email: `test1@example.com`
+- Password: `test123`
+- What to check: Should see Dashboard with Movement Library link only
+
+---
+
+### STEP 9: Quick Testing Checklist
+
+✅ Verify these work:
+
+- [ ] Can login as Admin
+- [ ] Can login as User
+- [ ] Admin can see admin dashboard with stats
+- [ ] Admin can see Movements menu
+- [ ] Admin can see Users menu
+- [ ] User can see Movement Library link
+- [ ] User CANNOT see Movements menu (it's hidden)
+- [ ] User CANNOT see Users menu (it's hidden)
+- [ ] Can logout successfully
+
+If ALL boxes are checked ✅, **deployment is successful!**
+
+---
+
+### STEP 10: Change Admin Password (IMPORTANT!)
+
+**What you're doing:** Secure the system by removing default credentials.
+
+1. **Open your app** and **login as admin** (admin@vitalpulse.com / admin123)
+2. Look for your **user menu** (top right corner)
+3. Find **Profile** or **Settings** option
+4. **Change password** to something secure
+5. **Log out** and **log back in** with new password
+6. Make sure the new password works ✅
+
+---
+
+### What If Something Goes Wrong?
+
+#### **Error: "XAMPP not running"**
+
+- Click XAMPP Control Panel
+- Click **Start** buttons for Apache and MySQL
+
+#### **Error: "Cannot connect to database"**
+
+- Check you created the database in PhpMyAdmin
+- Check `.env` file has correct database name
+- Make sure MySQL is running (green in XAMPP)
+
+#### **Error: "The application has encountered an error"**
+
+- Open file: `C:\xampp\htdocs\VitalPulse-Unit-[YourUnitName]\storage\logs\laravel.log`
+- Look for red error messages (last few lines)
+- Contact support with the error message
+
+#### **Error: "White blank page"**
+
+- Check XAMPP is running
+- Check if Apache shows in green
+- Restart Apache: XAMPP Control Panel → Stop Apache → Start Apache
+
+#### **Can't see the website**
+
+- Make sure you typed the correct URL: `http://localhost/VitalPulse-Unit-[YourUnitName]`
+- Check folder name matches exactly (including capitals)
+
+---
+
+### Summary
+
+You just deployed VitalPulse to a new unit! Here's what happened:
+
+1. ✅ Set up a new folder
+2. ✅ Installed all packages
+3. ✅ Created a database
+4. ✅ Configured the application
+5. ✅ Built the application
+6. ✅ Tested that it works
+7. ✅ Changed the admin password
+
+The application is **ready to use!** 🎉
 
 ---
 
