@@ -6,6 +6,15 @@
 
 ---
 
+## lIST OF MEMBERS
+
+- Matt Adrian Espera
+- Vinze Lulab
+- Bobby Malaga
+- Christian Jay Galorio
+
+---
+
 ## 📋 Table of Contents
 
 - [About VitalPulse](#about-vitalpulse)
